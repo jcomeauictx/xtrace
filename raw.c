@@ -18,7 +18,7 @@ int dumpraw(int buffersize, unsigned char *buffer) {
 }
 
 int main(int argc, char **argv) {
-	int bytes, count;
+	int bytes, count, available;
 	unsigned char buffer[BUFFERSIZE];
 	unsigned char *pointer = buffer;
 	fprintf(stderr, "args: %d ", argc);
@@ -40,11 +40,15 @@ int main(int argc, char **argv) {
 		for (int i = 1; i < argc; i++) {
 			count = strlen(argv[i]);
 			bytes += count;
-			pointer = strncpy(
+			available = BUFFERSIZE - (pointer - buffer);
+			fprintf(stderr,
+				"count: %d, buffer bytes available: %d\n",
+				count, available);
+			pointer = stpncpy(
 				pointer,
 				argv[i],
-				MIN(pointer - buffer, count + 1)
-			);
+				MIN(available, count + 1)
+			) + 1;
 		}
 		bytes += argc - 2;  /* number of nulls between args */
 	}
