@@ -26,14 +26,20 @@ int main(int argc, char **argv) {
 		if (ioctl(STDIN_FILENO, FIONREAD, &bytes) != 0) {
 			perror("failed getting byte count");
 			return 1;
+		} else if (bytes == 0) {
+			fprintf(stderr, "no bytes found in stdin\n");
+			return 1;
 		}
-		if (count = read(
-			STDIN_FILENO,
+		fprintf(stderr, "reading stdin into buffer\n");
+		if (count = fread(
 			buffer,
-			MIN(BUFFERSIZE, bytes)
+			1,
+			MIN(BUFFERSIZE, bytes),
+			stdin
 		) != bytes)
 			fprintf(stderr, "read %d out of %d bytes\n",
 				count, bytes);
+		else fprintf(stderr, "got %d bytes from stdin\n", count);
 	} else {
 		/* copy args into buffer with nulls between */
 		bytes = 0;
