@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
+#include "raw.h"
 
 int BUFFERSIZE = 128;
 
@@ -18,6 +19,7 @@ int dumpraw(int buffersize, unsigned char *buffer, bool newline) {
 	if (newline) printf("\n");
 }
 
+#ifdef TESTRAW
 int main(int argc, char **argv) {
 	int bytes, count, available;
 	unsigned char buffer[BUFFERSIZE];
@@ -48,3 +50,4 @@ int main(int argc, char **argv) {
 	}
 	dumpraw(bytes, buffer, true);
 }
+#endif
