@@ -50,6 +50,7 @@ bool interactive = false;
 bool print_timestamps = false;
 bool print_reltimestamps = false;
 bool print_uptimestamps = false;
+bool print_raw = false;
 static bool buffered = false;
 size_t maxshownlistlen = SIZE_MAX;
 
@@ -504,6 +505,7 @@ static const struct option longoptions[] = {
 	{"outfile",	required_argument,	NULL,	'o'},
 	{"buffered",		no_argument,	NULL,	'b'},
 	{"interactive",		no_argument,	NULL,	'i'},
+	{"raw",			no_argument,	NULL,	'r'},
 	{"help",		no_argument, &long_only_option,	LO_HELP},
 	{"version",		no_argument, &long_only_option,	LO_VERSION},
 	{"timestamps",		no_argument, &long_only_option,	LO_TIMESTAMPS},
@@ -582,6 +584,8 @@ int main(int argc, char *argv[]) {
 		 case 'b':
 			 buffered = true;
 			 break;
+		 case 'r':
+			 raw = true;
 		 case 'o':
 			 if( out != stdout ) {
 				 fprintf(stderr, "Multiple -o options!\n");
