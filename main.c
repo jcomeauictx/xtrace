@@ -586,6 +586,7 @@ int main(int argc, char *argv[]) {
 			 break;
 		 case 'r':
 			 print_raw = true;
+			 break;
 		 case 'o':
 			 if( out != stdout ) {
 				 fprintf(stderr, "Multiple -o options!\n");
