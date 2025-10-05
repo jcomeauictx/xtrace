@@ -33,6 +33,7 @@
 
 #include "xtrace.h"
 #include "parse.h"
+#include "raw.h"
 
 enum package_direction { TO_SERVER, TO_CLIENT };
 
@@ -803,12 +804,14 @@ static size_t printLISTofVALUE(struct connection *c,const uint8_t *buffer,size_t
 		 case ft_ENUM8:
 			 if( constant == NULL )
 				 fputs("unknown:",out);
+			 // fall through
 		 case ft_CARD8:
 			 fprintf(out,"0x%02x",(unsigned int)u8);
 			 break;
 		 case ft_ENUM16:
 			 if( constant == NULL )
 				 fputs("unknown:",out);
+			 // fall through
 		 case ft_CARD16:
 			 fprintf(out,"0x%04x",(unsigned int)u16);
 			 break;
@@ -821,6 +824,7 @@ static size_t printLISTofVALUE(struct connection *c,const uint8_t *buffer,size_t
 		 case ft_ENUM32:
 			 if( constant == NULL )
 				 fputs("unknown:",out);
+			 // fall through
 		 case ft_CARD32:
 			 fprintf(out,"0x%08x",(unsigned int)u32);
 			 break;
@@ -953,7 +957,7 @@ static inline void print_event(struct connection *c, const unsigned char *buffer
 		l = 32;
 
 	if( len < l ) {
-		fprintf(stderr, "ignoring incomplete event, length %d\n", len);
+		fprintf(stderr, "ignoring incomplete event, length %ld\n", len);
 		return;
 	}
 
@@ -1366,18 +1370,21 @@ static size_t print_parameters(struct connection *c, const unsigned char *buffer
 		 case ft_ENUM8:
 			 if( value == NULL )
 				 fputs("unknown:",out);
+			 // fall through
 		 case ft_CARD8:
 			 fprintf(out,"0x%02x",(unsigned int)u8);
 			 break;
 		 case ft_ENUM16:
 			 if( value == NULL )
 				 fputs("unknown:",out);
+			 // fall through
 		 case ft_CARD16:
 			 fprintf(out,"0x%04x",(unsigned int)u16);
 			 break;
 		 case ft_ENUM32:
 			 if( value == NULL )
 				 fputs("unknown:",out);
+			 // fall through
 		 case ft_CARD32:
 			 fprintf(out,"0x%08x",(unsigned int)u32);
 			 break;
@@ -1814,8 +1821,9 @@ static inline void print_server_event(struct connection *c) {
 		c->serverignore = 32;
 
 	startline(c, TO_CLIENT, "%04llx: Event ", (unsigned long long)c->seq);
-	print_event_data(c, c->serverbuffer, c->serverignore, event, name);
-	putc('\n',out);
+	if (print_raw) dumpraw(c->serverignore, c->serverbuffer, out, false);
+	else print_event_data(c, c->serverbuffer, c->serverignore, event, name);
+	putc('\n', out);
 }
 
 

@@ -8,16 +8,16 @@
 #include <stdlib.h>
 #include "raw.h"
 
-int BUFFERSIZE = 128;
+int BUFFERSIZE = 4096;
 
-void dumpraw(int buffersize, unsigned char *buffer, bool newline) {
+void dumpraw(int buffersize, unsigned char *buffer, FILE *out, bool newline) {
 	unsigned char byte;
 	for (int i = 0; i < buffersize; i++) {
 		byte = buffer[i];
-		if (byte < 127 && byte >= 32) printf("%c", byte);
-		else printf("\\x%02x", byte);
+		if (byte < 127 && byte >= 32) fprintf(out, "%c", byte);
+		else fprintf(out, "\\x%02x", byte);
 	}
-	if (newline) printf("\n");
+	if (newline) fprintf(out, "\n");
 }
 
 int convertraw(int buffersize, unsigned char *inbuffer, char *outbuffer) {
@@ -67,7 +67,7 @@ int main(int argc, char **argv) {
 		}
 		bytes += argc - 2;  /* number of nulls between args */
 	}
-	//dumpraw(bytes, buffer, true);
+	//dumpraw(bytes, buffer, stdout, true);
 	translated = malloc(BUFFERSIZE * 4);
 	count = convertraw(bytes, buffer, translated);
 	fwrite(translated, 1, count, stdout);
