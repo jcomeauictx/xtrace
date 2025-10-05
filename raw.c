@@ -24,7 +24,6 @@ char *convertraw(int buffersize, unsigned char *inbuffer, char *outbuffer) {
          * any nonprintable byte 0xab will be shown as "\xab". */
 	unsigned char byte;
 	char stringbuffer[5], *pointer = outbuffer;
-	size_t length;
 	for (int i = 0; i < buffersize; i++) {
 		byte = inbuffer[i];
 		if (byte < 127 && byte >= 32) {
