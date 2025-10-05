@@ -9,7 +9,7 @@
 
 int BUFFERSIZE = 128;
 
-int dumpraw(int buffersize, unsigned char *buffer, bool newline) {
+void dumpraw(int buffersize, unsigned char *buffer, bool newline) {
 	unsigned char byte;
 	for (int i = 0; i < buffersize; i++) {
 		byte = buffer[i];
@@ -17,6 +17,24 @@ int dumpraw(int buffersize, unsigned char *buffer, bool newline) {
 		else printf("\\x%02x", byte);
 	}
 	if (newline) printf("\n");
+}
+
+char *convertraw(int buffersize, unsigned char *inbuffer, char *outbuffer) {
+	/* outbuffer must be at least 4 times the size of inbuffer, because
+         * any nonprintable byte 0xab will be shown as "\xab". */
+	unsigned char byte;
+	char stringbuffer[5], *pointer = outbuffer;
+	size_t length;
+	for (int i = 0; i < buffersize; i++) {
+		byte = inbuffer[i];
+		if (byte < 127 && byte >= 32) {
+			pointer = mempcpy(pointer, &inbuffer[i], 1);
+		} else {
+			sprintf(stringbuffer, "\\x%02x", byte);
+			pointer = mempcpy(pointer, stringbuffer, 4);
+		}
+	}
+	return outbuffer;
 }
 
 #ifdef TESTRAW
