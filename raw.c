@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include "raw.h"
 
 int BUFFERSIZE = 128;
@@ -19,7 +20,7 @@ void dumpraw(int buffersize, unsigned char *buffer, bool newline) {
 	if (newline) printf("\n");
 }
 
-char *convertraw(int buffersize, unsigned char *inbuffer, char *outbuffer) {
+int convertraw(int buffersize, unsigned char *inbuffer, char *outbuffer) {
 	/* outbuffer must be at least 4 times the size of inbuffer, because
          * any nonprintable byte 0xab will be shown as "\xab". */
 	unsigned char byte;
@@ -33,7 +34,7 @@ char *convertraw(int buffersize, unsigned char *inbuffer, char *outbuffer) {
 			pointer = mempcpy(pointer, stringbuffer, 4);
 		}
 	}
-	return outbuffer;
+	return pointer - outbuffer;
 }
 
 #ifdef TESTRAW
@@ -41,6 +42,7 @@ int main(int argc, char **argv) {
 	int bytes, count, available;
 	unsigned char buffer[BUFFERSIZE];
 	unsigned char *pointer = buffer;
+	char *translated;
 	if (argc == 1) {  /* get data from stdin */
 		fprintf(stderr, "attempting to read raw data from stdin\n");
 		count = fread(buffer, 1, BUFFERSIZE, stdin);
@@ -65,6 +67,10 @@ int main(int argc, char **argv) {
 		}
 		bytes += argc - 2;  /* number of nulls between args */
 	}
-	dumpraw(bytes, buffer, true);
+	//dumpraw(bytes, buffer, true);
+	translated = malloc(BUFFERSIZE * 4);
+	count = convertraw(bytes, buffer, translated);
+	fwrite(translated, 1, count, stdout);
+	putc('\n', stdout);
 }
 #endif
