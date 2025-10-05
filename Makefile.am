@@ -2,9 +2,9 @@ bin_PROGRAMS = xtrace
 
 AM_CPPFLAGS = -DPKGDATADIR='"$(pkgdatadir)"'
 
-xtrace_SOURCES = main.c x11common.c x11client.c x11server.c parse.c copyauth.c atoms.c translate.c stringlist.c
+xtrace_SOURCES = main.c x11common.c x11client.c x11server.c parse.c copyauth.c atoms.c translate.c stringlist.c raw.c
 
-noinst_HEADERS = xtrace.h parse.h stringlist.h translate.h
+noinst_HEADERS = xtrace.h parse.h stringlist.h translate.h raw.h
 
 dist_man_MANS = xtrace.1
 
