@@ -957,7 +957,10 @@ static inline void print_event(struct connection *c, const unsigned char *buffer
 		l = 32;
 
 	if( len < l ) {
-		fprintf(stderr, "ignoring incomplete event, length %ld\n", len);
+		fprintf(stderr,
+			"ignoring incomplete event, length %lld\n",
+ 			(long long)len
+		);
 		return;
 	}
 
