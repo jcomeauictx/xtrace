@@ -46,6 +46,14 @@ static inline unsigned int padded(unsigned int s) {
 	return (s+3)&(~3);
 }
 
+void add_raw(int count, unsigned char *buffer, FILE *log);
+void add_raw(int count, unsigned char *buffer, FILE *log) {
+	fputs(" (", log);
+	dumpraw(count, buffer, log, false);
+	putc(')', log);
+}
+
+
 static void startline(struct connection *c, enum package_direction d, const char *format, ...) {
 	va_list ap;
 	struct timeval tv;
@@ -1824,11 +1832,10 @@ static inline void print_server_event(struct connection *c) {
 		c->serverignore = 32;
 
 	startline(c, TO_CLIENT, "%04llx: Event ", (unsigned long long)c->seq);
-	if (print_raw) dumpraw(c->serverignore, c->serverbuffer, out, false);
-	else print_event_data(c, c->serverbuffer, c->serverignore, event, name);
+	print_event_data(c, c->serverbuffer, c->serverignore, event, name);
+	if (print_raw) add_raw(c->serverignore, c->serverbuffer, out);
 	putc('\n', out);
 }
-
 
 static inline void print_server_reply(struct connection *c) {
 	unsigned int seq;
@@ -1873,6 +1880,7 @@ static inline void print_server_reply(struct connection *c) {
 				print_parameters(c, c->serverbuffer, len,
 					replyto->from->answers, false,
 					&stack, false);
+				if (print_raw) add_raw(c->serverignore, c->serverbuffer, out);
 				putc('\n',out);
 			}
 			if( !dontremove ) {
