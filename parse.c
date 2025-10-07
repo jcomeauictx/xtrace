@@ -1717,7 +1717,7 @@ static inline void print_client_request(struct connection *c,bool bigrequest) {
 					r->parameters, bigrequest, &stack, true);
 		if( r->request_func != NULL )
 			(void)r->request_func(c,false,bigrequest,NULL);
-		putc('\n',out);
+		fputs("\r\n", out);
 	}
 	if( r->answers != NULL ) {
 		/* register an awaited response */
@@ -1834,7 +1834,7 @@ static inline void print_server_event(struct connection *c) {
 	startline(c, TO_CLIENT, "%04llx: Event ", (unsigned long long)c->seq);
 	print_event_data(c, c->serverbuffer, c->serverignore, event, name);
 	if (print_raw) add_raw(c->serverignore, c->serverbuffer, out);
-	putc('\n', out);
+	fputs("\r\n", out);
 }
 
 static inline void print_server_reply(struct connection *c) {
@@ -1881,7 +1881,7 @@ static inline void print_server_reply(struct connection *c) {
 					replyto->from->answers, false,
 					&stack, false);
 				if (print_raw) add_raw(c->serverignore, c->serverbuffer, out);
-				putc('\n',out);
+				fputs("\r\n", out);
 			}
 			if( !dontremove ) {
 				*lastp = replyto->next;
@@ -1897,7 +1897,7 @@ static inline void print_server_reply(struct connection *c) {
 			seq, (unsigned int)c->serverignore);
 	print_parameters(c, c->serverbuffer, len,
 			unexpected_reply, false, &stack, false);
-	putc('\n',out);
+	fputs("\r\n", out);
 }
 
 const char * const *errors;
@@ -2059,7 +2059,7 @@ void parse_server(struct connection *c) {
 						  c->serverignore,
 						  setup_parameters,
 						  false, &stack, false);
-				  putc('\n',out);
+				  fputs("\r\n", out);
 			  }
 			  c->serverstate = s_normal;
 			  break;
