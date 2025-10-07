@@ -71,6 +71,7 @@ int main(int argc, char **argv) {
 	translated = malloc(BUFFERSIZE * 4);
 	count = convertraw(bytes, buffer, translated);
 	fwrite(translated, 1, count, stdout);
+	free(translated);
 	putc('\n', stdout);
 }
 #endif
